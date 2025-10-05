@@ -86,7 +86,7 @@ const Chat = () => {
                             {i < msg.sources.length - 1 ? ', ' : ''}
                           </span>
                         ))}
-                        {msg.sources.some((s) => s === 'internet') && ' (sourced from internet)'}
+                        {msg.sources.some((s) => s === 'gemini') && ' (sourced from Gemini)'}
                       </>
                     )}
                   </div>

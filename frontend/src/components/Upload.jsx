@@ -52,6 +52,18 @@ const Upload = () => {
     }
   };
 
+  const handleDelete = async (filename) => {
+    if (!window.confirm(`Are you sure you want to delete ${filename}?`)) return;
+    try {
+      await axios.delete(`http://localhost:5000/delete/${filename}`);
+      toast.success(`${filename} deleted successfully`);
+      fetchUploadedFiles();
+    } catch (error) {
+      console.error('Error deleting file:', error);
+      toast.error('Failed to delete file');
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto py-8">
       <div className="card">
@@ -95,10 +107,12 @@ const Upload = () => {
           )}
         </button>
       </div>
+
       <div className="card mt-6">
         <h2 className="text-2xl mb-4 flex items-center gap-2">
           <i className="fas fa-folder-open"></i> Uploaded Files
         </h2>
+
         {isLoadingFiles ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(3)].map((_, i) => (
@@ -114,10 +128,18 @@ const Upload = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {uploadedFiles.map((f, i) => (
-              <div key={i} className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                <p className="font-semibold text-blue-600 dark:text-blue-400">{f.title}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Date: {f.date}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Subject: {f.subject}</p>
+              <div key={i} className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors flex flex-col justify-between">
+                <div>
+                  <p className="font-semibold text-blue-600 dark:text-blue-400">{f.title}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Date: {f.date}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Subject: {f.subject}</p>
+                </div>
+                <button
+                  onClick={() => handleDelete(f.title)}
+                  className="mt-2 btn-secondary text-sm w-full"
+                >
+                  <i className="fas fa-trash"></i> Delete
+                </button>
               </div>
             ))}
           </div>
