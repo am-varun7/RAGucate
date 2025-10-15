@@ -1,0 +1,4 @@
+# backend/.gitignore
+my_index/
+uploaded_pdf/
+.env

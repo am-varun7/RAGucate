@@ -4,7 +4,6 @@ import { toast } from 'react-hot-toast';
 
 const Upload = () => {
   const [file, setFile] = useState(null);
-  const [link, setLink] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isLoadingFiles, setIsLoadingFiles] = useState(false);
@@ -27,21 +26,19 @@ const Upload = () => {
   }, []);
 
   const handleUpload = async () => {
-    if (!file && !link.trim()) {
-      toast.error('Please select a file or enter a link');
+    if (!file) {
+      toast.error('Please select a file to upload');
       return;
     }
     setIsUploading(true);
     const formData = new FormData();
-    if (file) formData.append('file', file);
-    if (link) formData.append('link', link);
+    formData.append('file', file);
 
     try {
       await axios.post('http://localhost:5000/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setFile(null);
-      setLink('');
       fetchUploadedFiles();
       toast.success('Upload successful!');
     } catch (error) {
@@ -72,22 +69,14 @@ const Upload = () => {
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Upload PDF/Notes</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+              Upload PDF/Notes
+            </label>
             <input
               type="file"
               onChange={(e) => setFile(e.target.files[0])}
               className="input-field"
               accept=".pdf,.txt"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Web Link</label>
-            <input
-              type="text"
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-              placeholder="https://example.com"
-              className="input-field"
             />
           </div>
         </div>
@@ -128,7 +117,10 @@ const Upload = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {uploadedFiles.map((f, i) => (
-              <div key={i} className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors flex flex-col justify-between">
+              <div
+                key={i}
+                className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors flex flex-col justify-between"
+              >
                 <div>
                   <p className="font-semibold text-blue-600 dark:text-blue-400">{f.title}</p>
                   <p className="text-sm text-gray-600 dark:text-gray-300">Date: {f.date}</p>
